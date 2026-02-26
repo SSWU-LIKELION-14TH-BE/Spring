@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -16,6 +17,7 @@ import java.util.Optional;
 @Slf4j
 public class BoardService {
     private final BoardRepository boardRepository;
+    private final S3Service s3Service;
 
     // 들어온 boardId 값과 db의 boardId 값이 일치하는 row 가져오기
     public Optional<Board> getBoard(Long boardId) {
@@ -43,6 +45,23 @@ public class BoardService {
         // 2-1) id를 전달할 경우, id에 대한 데이터가 있다면 -> Update
         // 2-2) id를 전달할 경우, id에 대한 데이터가 없다면 -> Insert
         boardRepository.save(board);
+    }
+
+    @Transactional
+    //이미지 포함 게시글 생성
+    public void ImageBoard(BoardDTO request) throws IOException {
+
+        String savedImageURI = s3Service.upload(request.getImage()); //이미지 s3에 업로드하고 url 가져오기
+
+        Board board = Board.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .writer(request.getWriter())
+                .image(savedImageURI) //img url 넣기
+                .build();
+
+        boardRepository.save(board);
+
     }
 
     // 게시글 삭제

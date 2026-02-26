@@ -1,6 +1,8 @@
 package com.likelion.session.dto;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Date;
 
 @AllArgsConstructor
@@ -14,4 +16,5 @@ public class BoardDTO {
     private String content;
     private String writer;
     private Date postDate;
+    private MultipartFile image;
 }

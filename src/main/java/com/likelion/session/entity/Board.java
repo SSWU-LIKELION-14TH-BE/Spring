@@ -30,6 +30,9 @@ public class Board {
     @Column(length = 15, nullable = false)
     private String writer;
 
+    @Column // 이미지 url 저장 위해 컬럼 추가
+    private String image;
+
     // 날짜만 표시, 시간 X
     private LocalDate postDate;
 
